@@ -46,6 +46,9 @@ export function runOpencode(
     const child = spawn(bin, ["run", prompt, "--agent", "repair", "--auto"], {
       cwd,
       windowsHide: true,
+      // stdin must be closed: opencode blocks reading an open stdin pipe and
+      // never boots (verified — this was the 10-min timeout root cause).
+      stdio: ["ignore", "pipe", "pipe"],
       env: { ...process.env, NO_COLOR: "1", FORCE_COLOR: "0" },
     });
 
