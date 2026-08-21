@@ -23,6 +23,8 @@ dev-server.log
 
 # kane cli derived state
 /.context/
+/.testmuai/evidence/
+/.testmuai/tests/output-*/
 yarn-debug.log*
 yarn-error.log*
 .pnpm-debug.log*
