@@ -46,9 +46,38 @@
 - [x] Phase 1 — cart app (3 behaviors) + documented sabotage point (see below)
 - [x] Phase 2 — `spec/onred.prd.md` → Kane `_test.md` files (`.testmuai/tests/`)
 - [x] Phase 3 — `POST /api/kane/compile` + `POST /api/kane/verify` (gate: 3/3 → 1 red → 3/3)
+- [x] Phase 4 — repair loop **validated end-to-end 21 Aug 16:22**: verify (9 min) →
+      RED on t-2 with real evidence ("cart shows two shirts and $40 total, but
+      header count says 1") → opencode repair agent applied the exact one-line
+      patch → re-verify → **GREEN 3/3** → `git reset --hard` restores the tree.
+- [x] Phase 5 — dashboard console (`/dashboard`)
 
-**Remaining for follow-up session:** Phase 4 (repair loop) and Phase 5 (dashboard).
-Do NOT record, do NOT rebuild Kane's pipeline — invoke it via the routes above.
+## Root cause of the old stuck loop (fixed 21 Aug)
+
+The cart summary rendered only `Total: $X` — no product names. Every generated
+test says "confirm the cart or cart summary now shows product_name", so Kane's
+authoring agent looped on the cart badge ("AP determined agent is stuck"),
+adaptive-heal re-authored the tail every run (20+ min verifies, 2/3 timeouts),
+and the repair agent got an automation bug it could never patch. Fixes:
+
+1. `app/page.tsx` renders cart line items (`{name} × {qty}`) in the summary.
+2. `app/page.tsx` has a **Clear cart** button — t-3's final assertion re-checks
+   the $0 empty-cart promise *after* an add, unreachable without it.
+3. t-3 gained a Step 6 ("Click Clear cart…") before the final assert — per
+   Kane's own bug-verdict suggestion. Assert-only steps never change state.
+
+Replays now run in ~40–70 s per test (first run per test still authors, minutes).
+
+## Demo-day warnings
+
+- **One machine, one state file.** The event log lives at
+  `%TEMP%\onred-repair-state.json`. A concurrent session writing mock events
+  into it clobbers the live log and can leave `job: "running"`, which 409-locks
+  the real loop (fix: set `"job":"idle"` in the file). Close other sessions
+  before the demo run.
+- The repair route stages `app/page.tsx` before the agent runs and ends with
+  `git reset --hard HEAD` — commit everything before triggering Repair, or
+  uncommitted work is lost.
 
 ## Rehearsal record (2026-08-21, proven)
 
