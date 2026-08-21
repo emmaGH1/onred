@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 
 type Status = "passed" | "failed" | "error";
@@ -18,8 +19,6 @@ type LogEvent = {
   diff?: string;
   detail?: string;
 };
-
-type VerifyReport = { results: TestResult[]; summary: { passed: number; failed: number; errored: number } };
 
 const PHASE_COLOR: Record<string, string> = {
   verifying: "text-sky-400",
@@ -143,9 +142,9 @@ export default function Dashboard({ initialSpec }: { initialSpec: string }) {
       <header className="border-b border-zinc-800 px-6 py-4">
         <div className="flex items-center justify-between">
           <h1 className="text-lg font-semibold">Onred — repair console</h1>
-          <a href="/" className="text-sm text-zinc-400 hover:text-zinc-200">
+          <Link href="/" className="text-sm text-zinc-400 hover:text-zinc-200">
             open cart app →
-          </a>
+          </Link>
         </div>
       </header>
 

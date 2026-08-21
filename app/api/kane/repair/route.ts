@@ -1,6 +1,6 @@
 import { readFile } from "node:fs/promises";
 import { DEFAULT_URL, SPEC_PATH } from "@/lib/kane";
-import { runVerify, type VerifyReport } from "@/lib/verify";
+import { runVerify } from "@/lib/verify";
 import { buildRepairPrompt, git, runOpencode } from "@/lib/repair";
 import {
   addEvent,
