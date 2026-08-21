@@ -10,10 +10,10 @@ import {
   setReport,
 } from "@/lib/events";
 
-const SAFE_URL = /^https?:\/\/(localhost|127\.0\.0\.1)(:\d{1,5})?\/?$/;
+const SAFE_URL = /^https?:\/\/(localhost|127\.0\.0\.1)(:\d{1,5})?(\/[\w./-]*)?$/;
 // The single, documented sabotage point. The loop stages it before the agent
 // runs so `git diff` afterwards shows exactly the agent's patch.
-const SABOTAGE_FILE = "app/page.tsx";
+const SABOTAGE_FILE = "app/cart/page.tsx";
 
 export async function POST(request: Request) {
   let body: { url?: string } = {};
@@ -82,7 +82,7 @@ async function runLoop(url: string): Promise<void> {
     const patch = (await git(["diff", "--", SABOTAGE_FILE])).stdout;
     addEvent(
       "patch_applied",
-      patch ? "Patch applied to app/page.tsx." : "Agent finished with no diff.",
+      patch ? "Patch applied to app/cart/page.tsx." : "Agent finished with no diff.",
       { diff: patch || undefined }
     );
 
@@ -100,8 +100,10 @@ async function runLoop(url: string): Promise<void> {
   } catch (err) {
     addEvent("error", `repair loop failed: ${String(err)}`);
   } finally {
-    // Restore a clean working tree for the next rehearsal run.
-    await git(["reset", "--hard", "HEAD"]);
+    // Restore only the fixture. A hard reset of HEAD wiped the landing page
+    // whenever Repair ran on uncommitted UI work.
+    await git(["checkout", "HEAD", "--", SABOTAGE_FILE]);
+    await git(["reset", "HEAD", "--", SABOTAGE_FILE]);
     setJob("idle");
   }
 }

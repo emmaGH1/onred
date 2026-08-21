@@ -2,7 +2,7 @@ import path from "node:path";
 import { DEFAULT_URL, TESTS_DIR, listTestFiles } from "@/lib/kane";
 import { runVerify } from "@/lib/verify";
 
-const SAFE_URL = /^https?:\/\/(localhost|127\.0\.0\.1)(:\d{1,5})?\/?$/;
+const SAFE_URL = /^https?:\/\/(localhost|127\.0\.0\.1)(:\d{1,5})?(\/[\w./-]*)?$/;
 const SAFE_FILENAME = /^[a-zA-Z0-9_\-]+\.md$/;
 
 export async function POST(request: Request) {
