@@ -7,7 +7,7 @@ import { REPO_ROOT } from "./kane";
 import type { TestResult } from "./verify";
 
 const execFileAsync = promisify(execFile);
-const OPENCODE_TIMEOUT_MS = 10 * 60 * 1000; // 10 min for a repair agent run
+const OPENCODE_TIMEOUT_MS = 20 * 60 * 1000; // 20 min — a working repair agent needs >10 (verified the hard way)
 
 function resolveOpencode(): string {
   const candidates = [
