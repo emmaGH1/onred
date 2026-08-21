@@ -56,9 +56,10 @@ export default function Page() {
           fill
           priority
           unoptimized
-          className="visor-lock object-cover object-center"
+          className="visor-lock object-cover object-[center_22%]"
         />
-        <div className="absolute inset-0 bg-gradient-to-b from-ground/50 via-transparent to-ground" />
+        <div className="absolute inset-x-0 top-0 h-28 bg-gradient-to-b from-ground to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-b from-ground/40 via-transparent to-ground" />
         <div className="absolute inset-x-0 bottom-0 h-[48%] bg-gradient-to-t from-ground via-ground/90 to-transparent" />
 
         <div className="relative z-10 flex min-h-[100dvh] flex-col">

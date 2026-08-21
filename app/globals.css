@@ -41,11 +41,9 @@ body {
 
 @keyframes visor-lock {
   from {
-    transform: scale(1.06);
-    opacity: 0.72;
+    opacity: 0.7;
   }
   to {
-    transform: scale(1);
     opacity: 1;
   }
 }
