@@ -57,6 +57,7 @@ export async function POST(request: Request) {
       "--use-case", id,
       "--mode", "ci",
       "--allow-unreviewed",
+      "--force",
     ]);
     push(`design tests ${id}`, design.code, design.code !== 0 ? design.stderr.slice(-500) : undefined);
     if (design.code !== 0) {
