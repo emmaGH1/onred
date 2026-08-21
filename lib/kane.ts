@@ -10,7 +10,7 @@ export const CONTEXT_DIR = path.join(REPO_ROOT, ".context");
 export const SPEC_PATH = path.join(REPO_ROOT, "spec", "onred.prd.md");
 
 const DEFAULT_URL = "http://localhost:3000";
-const RUN_TIMEOUT_MS = 5 * 60 * 1000; // 5 min per kane command
+const RUN_TIMEOUT_MS = 8 * 60 * 1000; // 8 min per kane command (t-1 adds 3 products and exceeds 5 min)
 
 function resolveKaneCli(): string {
   const candidates = [
