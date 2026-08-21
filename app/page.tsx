@@ -61,6 +61,27 @@ export default function Home() {
         </ul>
 
         <div className="mt-8 rounded-lg border border-zinc-200 bg-white p-4">
+          {/* Cart line items — Kane's tests confirm product names appear in the
+              cart summary after an add; without this list the authoring agent
+              loops on the badge and every run re-authors (the stuck loop). */}
+          <ul className="mb-3 space-y-1 text-sm text-zinc-700">
+            {cart.map((i) => (
+              <li key={i.id}>
+                {i.name} × {i.qty}
+              </li>
+            ))}
+          </ul>
+          {/* Clear cart — t-3's final assertion re-checks the $0 empty-cart
+              promise after an add; without a way to empty the cart the agent
+              can never reach that state. */}
+          {cart.length > 0 && (
+            <button
+              onClick={() => setCart([])}
+              className="mb-3 rounded-md border border-zinc-300 px-3 py-1 text-xs text-zinc-600 hover:bg-zinc-100"
+            >
+              Clear cart
+            </button>
+          )}
           <p className="text-lg font-semibold">Total: ${cartTotal}</p>
         </div>
       </main>

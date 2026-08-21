@@ -27,6 +27,10 @@ From the stored product_name card, add the product to the cart and confirm the c
 
 Assert the displayed Total label now equals unit_price and the displayed header item count now equals 1.
 
-## Step 6 — assert @verifies ac-1, ac-2, ac-3, ac-4
+## Step 6
+
+Click the "Clear cart" button in the cart summary so the cart has no items, and confirm the cart summary no longer lists any product.
+
+## Step 7 — assert @verifies ac-1, ac-2, ac-3, ac-4
 
 Confirm absolute check: $0 (equals) — the stated promise: When the cart has no items, the Total label shows $0.
