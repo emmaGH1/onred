@@ -9,7 +9,7 @@ export const TESTS_DIR = path.join(REPO_ROOT, ".testmuai", "tests");
 export const CONTEXT_DIR = path.join(REPO_ROOT, ".context");
 export const SPEC_PATH = path.join(REPO_ROOT, "spec", "onred.prd.md");
 
-const DEFAULT_URL = "http://localhost:3000";
+const DEFAULT_URL = "http://localhost:3000/cart";
 const RUN_TIMEOUT_MS = 12 * 60 * 1000; // 12 min per kane command — first-run authoring exceeds 8
 
 function resolveKaneCli(): string {
