@@ -51,13 +51,12 @@ export default function Page() {
     <div className="bg-ground">
       <section className="relative isolate min-h-[100dvh] overflow-hidden">
         <Image
-          src="/visor.jpg"
+          src="/visor-hud.jpg"
           alt="Visor HUD with a red scanline"
           fill
           priority
-          quality={100}
-          sizes="100vw"
-          className="visor-lock object-cover object-[center_22%]"
+          unoptimized
+          className="visor-lock object-cover object-center"
         />
         <div className="absolute inset-0 bg-gradient-to-b from-ground/50 via-transparent to-ground" />
         <div className="absolute inset-x-0 bottom-0 h-[48%] bg-gradient-to-t from-ground via-ground/90 to-transparent" />
