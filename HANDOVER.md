@@ -50,6 +50,29 @@
 **Remaining for follow-up session:** Phase 4 (repair loop) and Phase 5 (dashboard).
 Do NOT record, do NOT rebuild Kane's pipeline — invoke it via the routes above.
 
+## Rehearsal record (2026-08-21, proven)
+
+**Full cycle completed green, end to end:**
+
+| Phase | Time | Evidence |
+|---|---|---|
+| Sabotage applied (`sum + i.qty` → `sum + 1`) | 15:15 | working tree |
+| Verify → fail detected | 15:30 (≈15 min) | t-2 failed: "header cart count stays at 1" — exactly the sabotaged behavior; t-1/t-3 green |
+| Repair agent (opencode `--agent repair`) | 15:32 (≈2 min) | one-line diff: restored `sum + i.qty` — minimal-diff constraint held |
+| Re-verify → GREEN | 15:52 | 3/3 passed (t-1 87s, t-2 157s, t-3 366s) |
+| Tree self-reset | auto | `git reset --hard HEAD` in loop's finally block |
+
+**Root causes fixed along the way (all committed):**
+- `7d517ae` — opencode hangs on an open stdin pipe; spawn with `stdio: ["ignore", ...]`. This was THE blocker: every prior repair attempt died as a 10-min timeout.
+- `d8e35b1` — timeouts raised: opencode 20 min, kane per-test 12 min (first-run authoring exceeds 8).
+- `cc91b7c` / `9b9925c` — cart line items + Clear cart button so t-3 can reach its empty-cart assertion (Kane-authored test needed a reachable empty state).
+
+**Demo pacing (for the 3-min video):**
+- Verify (replay): ~6–10 min wall clock → **time-lapse or cut**; show red board result
+- Repair agent: ~2 min → show event log live + the one-line diff (this is the centerpiece — give it real screen time)
+- Re-verify: ~6 min → cut to green board
+- Never show a live unedited full cycle — it cannot fit 3 minutes.
+
 ## Sabotage point
 
 The cart app has exactly ONE deliberate, isolated sabotage line. It lives in
