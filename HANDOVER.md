@@ -41,7 +41,14 @@
 - [x] docs (.gitignore, README, HANDOVER, AGENTS, repair agent)
 - [x] Next.js scaffold (v16.3.1, builds clean)
 - [x] Kane CLI installed (v0.8.5)
-- [ ] Kane CLI verify smoke test — **blocked: needs `kane-cli login` (no access key available)**
+- [x] Kane CLI auth (`kane-cli whoami` → user `emma080355`, oauth, valid token)
+- [x] Phase 0 — real pass/fail NDJSON samples in `samples/` (from `testmd run --agent`)
+- [x] Phase 1 — cart app (3 behaviors) + documented sabotage point (see below)
+- [x] Phase 2 — `spec/onred.prd.md` → Kane `_test.md` files (`.testmuai/tests/`)
+- [x] Phase 3 — `POST /api/kane/compile` + `POST /api/kane/verify` (gate: 3/3 → 1 red → 3/3)
+
+**Remaining for follow-up session:** Phase 4 (repair loop) and Phase 5 (dashboard).
+Do NOT record, do NOT rebuild Kane's pipeline — invoke it via the routes above.
 
 ## Sabotage point
 
@@ -77,13 +84,14 @@ const cartCount = cart.reduce((sum, i) => sum + 1, 0);
   `kane-cli login --oauth` (browser), or
   `kane-cli login --username <user> --access-key <key>` (basic auth).
 - **Verify command:** `kane-cli run --url http://localhost:3000 "<objective>"`.
-- **Status:** ⚠️ **BLOCKED at auth.** `kane-cli whoami` → "Not logged in". A test
-  run exits with: `Not authenticated. Run: kane-cli login --oauth, or
-  kane-cli login --username <user> --access-key <key>`. No TestMu AI access key
-  was available in the environment (no env vars, no stored profile).
-  **Manual step needed:** the user must run `kane-cli login --oauth` (opens
-  browser) or `kane-cli login --username <user> --access-key <key>` with their
-  TestMu AI credentials, then re-run the verify command above.
+- **Status:** ✅ authenticated (`kane-cli whoami` → user `emma080355`, oauth,
+  token valid). Verify smoke test passes: `kane-cli run --url http://localhost:3000
+  --agent --headless "<objective>"` navigates to the app and returns NDJSON on stdout.
+  **Note:** use `--headless` — headed mode intermittently times out on the
+  post-nav screenshot. Generated `_test.md` files reference `{{start_url}}`;
+  fill it via `--variables-file` (a JSON file `{"start_url":{"value":"<url>","secret":false}}`),
+  NOT `--url` (that flag is ignored by `testmd run`). First `testmd run` per test
+  *authors* (slow, minutes); later runs *replay* (tens of seconds).
 
 ## Kane pipeline → concept mapping (verified against v0.8.5 help)
 
