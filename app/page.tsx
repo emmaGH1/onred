@@ -1,90 +1,173 @@
-"use client";
+import Image from "next/image";
+import Link from "next/link";
+import { Button } from "@/components/ui/button";
+import { Separator } from "@/components/ui/separator";
+import { IndexNav } from "@/components/index-nav";
+import { Reveal } from "@/components/reveal";
+import { SiteFooter } from "@/components/site-footer";
+import { Wordmark } from "@/components/wordmark";
 
-import { useState } from "react";
-
-type Product = { id: string; name: string; price: number };
-type CartItem = Product & { qty: number };
-
-const PRODUCTS: Product[] = [
-  { id: "shirt", name: "T-Shirt", price: 20 },
-  { id: "mug", name: "Coffee Mug", price: 12 },
-  { id: "hat", name: "Cap", price: 18 },
+const STEPS = [
+  {
+    n: "01",
+    title: "Detect",
+    body: "Kane runs the spec in a real browser and returns pass or fail with evidence.",
+  },
+  {
+    n: "02",
+    title: "Diagnose",
+    body: "The failure is a verdict — one-liner, root cause, suggested fix — not a wall of logs.",
+  },
+  {
+    n: "03",
+    title: "Repair",
+    body: "An opencode agent reads that evidence and applies the smallest possible patch.",
+  },
+  {
+    n: "04",
+    title: "Re-verify",
+    body: "The same checks run again. Green, or the loop continues. Nobody writes the fix.",
+  },
 ];
 
-export default function Home() {
-  const [cart, setCart] = useState<CartItem[]>([]);
+const LOG = [
+  { phase: "fail_detected", color: "text-onred", msg: "2 passed, 1 failed." },
+  {
+    phase: "detail",
+    color: "text-mute",
+    msg: "The cart shows two shirts and a $40 total, but the header cart count still says 1.",
+  },
+  {
+    phase: "diagnosing",
+    color: "text-warn",
+    msg: "Routing failure evidence to the repair agent.",
+  },
+  { phase: "patch_applied", color: "text-pass", msg: "Patch applied to app/cart/page.tsx." },
+  { phase: "green", color: "text-pass", msg: "GREEN — 3/3 checks pass." },
+];
 
-  function addToCart(product: Product) {
-    setCart((prev) => {
-      const existing = prev.find((i) => i.id === product.id);
-      if (existing) {
-        return prev.map((i) =>
-          i.id === product.id ? { ...i, qty: i.qty + 1 } : i
-        );
-      }
-      return [...prev, { ...product, qty: 1 }];
-    });
-  }
-
-  const cartTotal = cart.reduce((sum, i) => sum + i.price * i.qty, 0);
-  // Header item count (behavior #3) — isolated on this line on purpose.
-  const cartCount = cart.reduce((sum, i) => sum + i.qty, 0);
-
+export default function Page() {
   return (
-    <div className="min-h-screen bg-zinc-50 text-zinc-900">
-      <header className="flex items-center justify-between border-b border-zinc-200 bg-white px-6 py-4">
-        <h1 className="text-lg font-semibold">Onred</h1>
-        <div className="rounded-full bg-zinc-900 px-3 py-1 text-sm text-white">
-          Cart ({cartCount})
-        </div>
-      </header>
+    <div className="bg-ground">
+      <section className="relative isolate min-h-[100dvh] overflow-hidden">
+        <Image
+          src="/visor.jpg"
+          alt="Visor HUD with a red scanline"
+          fill
+          priority
+          quality={100}
+          sizes="100vw"
+          className="visor-lock object-cover object-[center_22%]"
+        />
+        <div className="absolute inset-0 bg-gradient-to-b from-ground/50 via-transparent to-ground" />
+        <div className="absolute inset-x-0 bottom-0 h-[48%] bg-gradient-to-t from-ground via-ground/90 to-transparent" />
 
-      <main className="mx-auto max-w-2xl px-6 py-8">
-        <ul className="space-y-3">
-          {PRODUCTS.map((p) => (
-            <li
-              key={p.id}
-              className="flex items-center justify-between rounded-lg border border-zinc-200 bg-white p-4"
-            >
-              <div>
-                <p className="font-medium">{p.name}</p>
-                <p className="text-sm text-zinc-500">${p.price}</p>
+        <div className="relative z-10 flex min-h-[100dvh] flex-col">
+          <div className="flex items-start justify-between px-6 pt-6 sm:px-8">
+            <Wordmark />
+          </div>
+          <IndexNav />
+
+          <div className="mt-auto px-6 pb-16 sm:px-8 lg:pb-20">
+            <div className="mx-auto max-w-4xl text-center">
+              <p className="rise rise-1 font-mono text-sm tracking-wide text-mute">
+                find. fix. <span className="text-onred">ship.</span>
+              </p>
+              <h1 className="rise rise-2 mt-4 font-display text-[2.35rem] leading-[1.05] font-semibold tracking-tight sm:text-6xl lg:text-7xl">
+                Kane finds the bug.
+                <br />
+                <span className="text-onred">onred fixes it.</span>
+              </h1>
+              <div className="rise rise-3 mt-10 flex flex-col items-center justify-center gap-5 sm:flex-row sm:gap-8">
+                <Button asChild size="lg">
+                  <Link href="/dashboard">Watch it fix a bug</Link>
+                </Button>
+                <Button asChild variant="ghostline" size="inline">
+                  <a href="https://github.com/emmaGH1/onred">View source</a>
+                </Button>
               </div>
-              <button
-                onClick={() => addToCart(p)}
-                className="rounded-md bg-zinc-900 px-4 py-2 text-sm text-white"
-              >
-                Add to cart
-              </button>
-            </li>
-          ))}
-        </ul>
-
-        <div className="mt-8 rounded-lg border border-zinc-200 bg-white p-4">
-          {/* Cart line items — Kane's tests confirm product names appear in the
-              cart summary after an add; without this list the authoring agent
-              loops on the badge and every run re-authors (the stuck loop). */}
-          <ul className="mb-3 space-y-1 text-sm text-zinc-700">
-            {cart.map((i) => (
-              <li key={i.id}>
-                {i.name} × {i.qty}
-              </li>
-            ))}
-          </ul>
-          {/* Clear cart — t-3's final assertion re-checks the $0 empty-cart
-              promise after an add; without a way to empty the cart the agent
-              can never reach that state. */}
-          {cart.length > 0 && (
-            <button
-              onClick={() => setCart([])}
-              className="mb-3 rounded-md border border-zinc-300 px-3 py-1 text-xs text-zinc-600 hover:bg-zinc-100"
-            >
-              Clear cart
-            </button>
-          )}
-          <p className="text-lg font-semibold">Total: ${cartTotal}</p>
+            </div>
+          </div>
         </div>
-      </main>
+      </section>
+
+      <section id="loop" className="mx-auto max-w-6xl px-6 py-24 sm:py-32">
+        <Reveal>
+          <p className="font-mono text-[10px] uppercase tracking-[0.28em] text-onred">
+            how it works
+          </p>
+          <h2 className="mt-4 max-w-2xl font-display text-4xl leading-tight font-semibold sm:text-5xl">
+            Four steps. Zero humans in the middle.
+          </h2>
+        </Reveal>
+        <div className="mt-16 grid gap-10 sm:grid-cols-2 lg:grid-cols-4">
+          {STEPS.map((s, i) => (
+            <Reveal key={s.n}>
+              <article className="relative">
+                {i < STEPS.length - 1 && (
+                  <span
+                    aria-hidden
+                    className="absolute top-3 left-12 hidden h-px w-[calc(100%-0.5rem)] bg-onred/30 lg:block"
+                  />
+                )}
+                <p className="font-mono text-xs tracking-widest text-onred">{s.n}</p>
+                <h3 className="mt-3 font-display text-2xl">{s.title}</h3>
+                <p className="mt-3 text-sm leading-relaxed text-mute">{s.body}</p>
+              </article>
+            </Reveal>
+          ))}
+        </div>
+      </section>
+
+      <Separator />
+
+      <section
+        id="console"
+        className="mx-auto grid max-w-6xl items-center gap-12 px-6 py-24 lg:grid-cols-2 lg:py-32"
+      >
+        <Reveal>
+          <p className="font-mono text-[10px] uppercase tracking-[0.28em] text-onred">
+            the console
+          </p>
+          <h2 className="mt-4 font-display text-4xl leading-tight font-semibold sm:text-5xl">
+            The board the loop writes on.
+          </h2>
+          <p className="mt-5 max-w-md text-mute">
+            Spec in. Event log out. When a check goes red, Repair is one
+            control. The cart is the specimen — this is the product.
+          </p>
+          <div className="mt-8">
+            <Button asChild>
+              <Link href="/dashboard">Open the repair console</Link>
+            </Button>
+          </div>
+        </Reveal>
+        <Reveal>
+          <div className="border border-line bg-black p-5 font-mono text-[11px] leading-relaxed">
+            {LOG.map((e, i) => (
+              <div key={i} className="mb-2 last:mb-0">
+                {e.phase !== "detail" && (
+                  <span className={e.color}>{e.phase}</span>
+                )}
+                <p className={e.phase === "detail" ? "text-mute" : "text-ink"}>
+                  {e.msg}
+                </p>
+              </div>
+            ))}
+            <pre className="mt-3 border border-line bg-panel p-3 text-[10px] leading-relaxed">
+              <span className="text-onred">
+                -  const cartCount = cart.reduce((sum, i) =&gt; sum + 1, 0);
+              </span>
+              {"\n"}
+              <span className="text-pass">
+                +  const cartCount = cart.reduce((sum, i) =&gt; sum + i.qty, 0);
+              </span>
+            </pre>
+          </div>
+        </Reveal>
+      </section>
+
+      <SiteFooter />
     </div>
   );
 }
