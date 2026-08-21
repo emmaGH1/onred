@@ -43,6 +43,31 @@
 - [x] Kane CLI installed (v0.8.5)
 - [ ] Kane CLI verify smoke test — **blocked: needs `kane-cli login` (no access key available)**
 
+## Sabotage point
+
+The cart app has exactly ONE deliberate, isolated sabotage line. It lives in
+`app/page.tsx` behind **behavior #3 (header item count)** — it does NOT affect
+behavior #1 (add to cart) or #2 (cart total).
+
+Current (correct) line:
+
+```ts
+const cartCount = cart.reduce((sum, i) => sum + i.qty, 0);
+```
+
+Sabotage (one-line change — breaks ONLY the header count):
+
+```ts
+const cartCount = cart.reduce((sum, i) => sum + 1, 0);
+```
+
+- **Effect:** the header counts distinct line items instead of total quantity.
+  Add the same product 3× → header shows `Cart (1)` instead of `Cart (3)`.
+- **Why it's isolated:** `cartTotal` is a separate reduce (`price * qty`) on the
+  line above, so the total stays correct and adding still works. Only #3 flips.
+- **Rehearse** (always this exact take, never improvised): add T-Shirt 3× →
+  header should read `Cart (3)`. After sabotage it reads `Cart (1)`.
+
 ## Kane CLI
 
 - **Install command:** `npm install -g @testmuai/kane-cli` — installed v0.8.5. ✅
