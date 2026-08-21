@@ -1,7 +1,7 @@
 ---
 assurance:
   id: t-3
-  base: sha256:bfbf54b8a56cf6c47368426db5c28ec3ddc66d99e8e1c216137a6c8c5f55e615
+  base: sha256:bdc71ab4584ce6cc0fff37c25ea3207cfaba5c5d974d19bdca147fefffb631a0
 ---
 # Verify empty-cart total starts at $0 before the first add
 
