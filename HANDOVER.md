@@ -37,14 +37,35 @@
 
 ## Current status checklist
 
-- [ ] git repo, remote, initial push
-- [ ] docs (.gitignore, README, HANDOVER, AGENTS, repair agent)
-- [ ] Next.js scaffold
-- [ ] Kane CLI installed
-- [ ] Kane CLI verify smoke test
+- [x] git repo, remote, initial push
+- [x] docs (.gitignore, README, HANDOVER, AGENTS, repair agent)
+- [x] Next.js scaffold (v16.3.1, builds clean)
+- [x] Kane CLI installed (v0.8.5)
+- [ ] Kane CLI verify smoke test — **blocked: needs `kane-cli login` (no access key available)**
 
 ## Kane CLI
 
-- **Install command:** (filled in step 8)
-- **Verify command:** (filled in step 8)
-- **Status:** (filled in step 8)
+- **Install command:** `npm install -g @testmuai/kane-cli` — installed v0.8.5. ✅
+  (official package `@testmuai/kane-cli`, binary `kane-cli`; source:
+  https://www.testmuai.com/support/docs/kane-cli-introduction/)
+- **Auth command:** `kane-cli login` — interactive, or
+  `kane-cli login --oauth` (browser), or
+  `kane-cli login --username <user> --access-key <key>` (basic auth).
+- **Verify command:** `kane-cli run --url http://localhost:3000 "<objective>"`.
+- **Status:** ⚠️ **BLOCKED at auth.** `kane-cli whoami` → "Not logged in". A test
+  run exits with: `Not authenticated. Run: kane-cli login --oauth, or
+  kane-cli login --username <user> --access-key <key>`. No TestMu AI access key
+  was available in the environment (no env vars, no stored profile).
+  **Manual step needed:** the user must run `kane-cli login --oauth` (opens
+  browser) or `kane-cli login --username <user> --access-key <key>` with their
+  TestMu AI credentials, then re-run the verify command above.
+
+## Kane pipeline → concept mapping (verified against v0.8.5 help)
+
+- context ingest  → `kane-cli context ingest <src...>` (lands sources into `.context/`)
+- context extract → `kane-cli context extract` (extract use-cases via context agent)
+- design tests    → `kane-cli design tests` (committed use-case → ACs, scenarios, 1:1 tests)
+- run/verify      → `kane-cli run --url <url> "<objective>"` (browser run, pass/fail)
+- evidence/cover  → `kane-cli evidence`, `kane-cli cover` (proof pack + coverage)
+
+Use these as-is. Do NOT rebuild spec→test generation.
